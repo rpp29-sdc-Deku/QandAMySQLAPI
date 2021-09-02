@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const mysqlConfig = require("./config.js");
 
 //create connection paramaters
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: mysqlConfig.HOST,
   user: mysqlConfig.USER,
   database: mysqlConfig.DATABASE
@@ -10,10 +10,12 @@ const connection = mysql.createConnection({
 
 
 // connect to database
-  connection.connect((err) => {
+  db.connect((err) => {
     if (err) {
       return console.log('err err ', err)
     } else {
       console.log('connected to MySQL db')
     }
 });
+
+module.exports = db;

@@ -47,3 +47,5 @@ CREATE TABLE Answers_Photos (
  *  Line above will create new tables each time this is run in the mysql terminal
  *    mysql -u root < /Users/lady/rpp29/SDCMySQL/schema.sql
  *  to create the database and the tables.*/
+
+--  check out indexing MySql
