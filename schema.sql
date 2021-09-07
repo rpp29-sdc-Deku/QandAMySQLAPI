@@ -22,6 +22,7 @@ CREATE TABLE Answers (
   id INT PRIMARY KEY,
   question_id INT NOT NULL,
   body VARCHAR (255),
+  date_written BIGINT,
   answerer_name VARCHAR (25),
   answerer_email VARCHAR (55),
   reported INT,

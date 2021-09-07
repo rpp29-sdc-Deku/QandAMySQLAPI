@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const db = require('../database/index.js');
 const app = express();
@@ -13,27 +14,50 @@ app.get('/', async (req, res) => {
 
 app.get('/qa/questions', (req, res) => {
   let responseObj = {};
+  let answerObj = {};
   const query = 'SELECT * FROM QUESTIONS WHERE product_id = ?';
   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
     if (error) {
-      console.log('err err ', error)
+      console.log('err err ', error);
     }
     if (!results[0]) {
       res.json('No questions found')
     } else {
-      responseObj['product_id'] = req.query['product_id'];
-      responseObj['results'] = [];
       for (let i = 0; i < req.query['count']; i++) {
+        responseObj['product_id'] = req.query['product_id'];
+        if (!responseObj['results']) {
+          responseObj['results'] = [];
+        }
         responseObj['results'].push({
           'question_id': results[i]['id'],
           'question_body': results[i]['body'],
           'question_date': results[i]['date_written'],
           'asker_name': results[i]['asker_name'],
           'question_helpfulness': results[i]['helpful'],
-          'reported': results[i]['helpful'] === 0 ? true : false
+          'reported': results[i]['helpful'] === 0 ? true : false,
+          'answers': {}
         });
       }
-      console.log(responseObj);
+      for (let j = 0; j < responseObj.results.length - 1; j++) {
+        db.query(`SELECT * FROM ANSWERS WHERE question_id = ${responseObj.results[j]['question_id']}`, (error, answers) => {
+          if (error) {
+            console.log('errrerrrr ', error);
+          }
+          if (!answers) {
+            console.log('No answers found');
+          } else {
+            answerObj['id'] = answers[j]['id'];
+            answerObj['body'] = answers[j]['body'];
+            answerObj['date'] = answers[j]['date_written'];
+            answerObj['answerer_name'] = answers[j]['answerer_name'];
+            answerObj['helpfulness'] = answers[j]['helpful'];
+            answerObj['photos'] = [];
+            console.log(answerObj);
+          }
+        })
+      }
+
+       console.log(responseObj);
       res.json(results.splice(0, req.query['count']));
     }
   })
