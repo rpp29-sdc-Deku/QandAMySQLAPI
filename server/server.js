@@ -46,12 +46,12 @@ app.put('/likeQuestion', (req, res) => {
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
     if (err) {
-      console.log('errrr ', error);
+      console.log('errrr ', err);
     } else {
-      console.log(results);
+
       res.json('question Liked');
     }
-  })
+  });
 });
 
 // PUT /likeAnswer
@@ -60,17 +60,25 @@ app.put('/likeAnswer', (req, res) => {
   const query = `UPDATE Answers SET helpful = helpful+1 WHERE id = ${answerId}`;
   db.query(query, (err, results) => {
     if (err) {
-      console.log('eerruyuh ', error);
+      console.log('eerruyuh ', err);
     } else {
       res.json('answer Liked')
     }
-  })
+  });
 });
 
 // PUT /reportQuestion
 app.put('/reportQuestion', (req, res) => {
-  //query
-  res.json('question Reported');
+  const questionId = req.query['question_id'];
+  const query = `UPDATE Questions SET reported = 1 WHERE id = ${questionId}`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log('errrr ', err);
+    } else {
+      console.log(results);
+      res.json('question Reported');
+    }
+  });
 });
 
 // PUT /reportAnswer
