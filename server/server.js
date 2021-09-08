@@ -56,8 +56,15 @@ app.put('/likeQuestion', (req, res) => {
 
 // PUT /likeAnswer
 app.put('/likeAnswer', (req, res) => {
-  //query
-  res.json('answer Liked');
+  const answerId = req.query['answer_id']
+  const query = `UPDATE Answers SET helpful = helpful+1 WHERE id = ${answerId}`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log('eerruyuh ', error);
+    } else {
+      res.json('answer Liked')
+    }
+  })
 });
 
 // PUT /reportQuestion
