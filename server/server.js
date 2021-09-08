@@ -75,7 +75,6 @@ app.put('/reportQuestion', (req, res) => {
     if (err) {
       console.log('errrr ', err);
     } else {
-      console.log(results);
       res.json('question Reported');
     }
   });
@@ -83,8 +82,15 @@ app.put('/reportQuestion', (req, res) => {
 
 // PUT /reportAnswer
 app.put('/reportAnswer', (req, res) => {
-  //query
-  res.json('answer Reported');
+  const answerId = req.query['answer_id'];
+  const query = `UPDATE Answers SET reported = 1 WHERE id = ${answerId}`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log('errrr ', err);
+    } else {
+      res.json('answer Reported');
+    }
+  });
 });
 
 // POST /submitQuestion
