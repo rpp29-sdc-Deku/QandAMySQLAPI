@@ -7,15 +7,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = 3030;
 
-// routes
+// routes //
+
+// root
 app.get('/', async (req, res) => {
   res.json({status: 'received get req to root '})
 })
 
+// GET /qa/questions
 app.get('/qa/questions', (req, res) => {
-  let responseObj = {};
-  let answerObj = {};
-  const query = 'SELECT * FROM QUESTIONS WHERE product_id = ?';
+  let resultObj = {};
+  const query = `SELECT Questions.product_id AS product_id,
+  Questions.id AS question_id, Questions.body AS question_body, Questions.date_written AS question_date,
+  Questions.asker_name AS asker_name, Questions.helpful AS question_helpfulness, Questions.reported AS reported,
+  Answers.id, Answers.body, Answers.date_written AS date, Answers.answerer_name,Answers.helpful AS helpfulness
+  FROM Questions, Answers
+  WHERE Questions.id = 1
+  AND Questions.id = Answers.question_id`;
   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
     if (error) {
       console.log('err err ', error);
@@ -23,45 +31,73 @@ app.get('/qa/questions', (req, res) => {
     if (!results[0]) {
       res.json('No questions found')
     } else {
-      for (let i = 0; i < req.query['count']; i++) {
-        responseObj['product_id'] = req.query['product_id'];
-        if (!responseObj['results']) {
-          responseObj['results'] = [];
-        }
-        responseObj['results'].push({
-          'question_id': results[i]['id'],
-          'question_body': results[i]['body'],
-          'question_date': results[i]['date_written'],
+      //console.log(results);
+      // check out ?agg funcs, nested queries,
+      resultObj['product_id'] = req.query['product_id'];
+      resultObj['results'] = [];
+      for (let i = 0; i < results.length; i++) {
+        console.log(results[i])
+         resultObj['results'].push({
+          'question_id': results[i]['question_id'],
+          'question_body': results[i]['question_body'],
+          'question_date': results[i]['question_date'],
           'asker_name': results[i]['asker_name'],
-          'question_helpfulness': results[i]['helpful'],
-          'reported': results[i]['helpful'] === 0 ? true : false,
-          'answers': {}
+          'question_helpfulness': results[i]['question_helpfulness'] ,
+          'reported': results[i]['reported'],
+          'answers': []
         });
+        console.log(resultObj);
+        //resultObj['results'].push(results[i]);
+        //console.log(resultObj)
       }
-      for (let j = 0; j < responseObj.results.length - 1; j++) {
-        db.query(`SELECT * FROM ANSWERS WHERE question_id = ${responseObj.results[j]['question_id']}`, (error, answers) => {
-          if (error) {
-            console.log('errrerrrr ', error);
-          }
-          if (!answers) {
-            console.log('No answers found');
-          } else {
-            answerObj['id'] = answers[j]['id'];
-            answerObj['body'] = answers[j]['body'];
-            answerObj['date'] = answers[j]['date_written'];
-            answerObj['answerer_name'] = answers[j]['answerer_name'];
-            answerObj['helpfulness'] = answers[j]['helpful'];
-            answerObj['photos'] = [];
-            console.log(answerObj);
-          }
-        })
-      }
-
-       console.log(responseObj);
       res.json(results.splice(0, req.query['count']));
     }
   })
 })
+
+// PUT /likeQuestion
+app.put('/likeQuestion', (req, res) => {
+  //query
+  res.json('question Liked');
+});
+
+// PUT /likeAnswer
+app.put('/likeAnswer', (req, res) => {
+  //query
+  res.json('answer Liked');
+});
+
+// PUT /reportQuestion
+app.put('/reportQuestion', (req, res) => {
+  //query
+  res.json('question Reported');
+});
+
+// PUT /reportAnswer
+app.put('/reportAnswer', (req, res) => {
+  //query
+  res.json('answer Reported');
+});
+
+// POST /submitQuestion
+app.post('/submitQuestion', (req, res) => {
+  //query
+  res.json('question Submitted')
+});
+
+// POST /submitAnswer
+app.post('/submitAnswer', (req, res) => {
+  //query
+  res.json('answer Submitted');
+});
+
+// POST /logInteraction
+app.post('/logInteraction', (req, res) => {
+  //query
+  res.json('interaction Logged');
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`)
@@ -245,3 +281,57 @@ app.listen(PORT, () => {
 //       }
 //   ]
 // }
+
+// app.get('/qa/questions', (req, res) => {
+//   let responseObj = {};
+//   let answerObj = {};
+//   const query = 'SELECT * FROM QUESTIONS WHERE product_id = ?';
+//   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
+//     if (error) {
+//       console.log('err err ', error);
+//     }
+//     if (!results[0]) {
+//       res.json('No questions found')
+//     } else {
+//       for (let i = 0; i < req.query['count']; i++) {
+//         responseObj['product_id'] = req.query['product_id'];
+//         if (!responseObj['results']) {
+//           responseObj['results'] = [];
+//         }
+//         responseObj['results'].push({
+//           'question_id': results[i]['id'],
+//           'question_body': results[i]['body'],
+//           'question_date': results[i]['date_written'],
+//           'asker_name': results[i]['asker_name'],
+//           'question_helpfulness': results[i]['helpful'],
+//           'reported': results[i]['helpful'] === 0 ? true : false,
+//           'answers': []
+//         });
+//       }
+//       for (let j = 0; j < responseObj.results.length - 1; j++) {
+//         db.query(`SELECT * FROM ANSWERS WHERE question_id = ${responseObj.results[j]['question_id']}`, (error, answers) => {
+//           if (error) {
+//             console.log('errrerrrr ', error);
+//           }
+//           if (!answers) {
+//             console.log('No answers found');
+//           } else {
+//             answerObj['id'] = answers[j]['id'];
+//             answerObj['body'] = answers[j]['body'];
+//             answerObj['date'] = answers[j]['date_written'];
+//             answerObj['answerer_name'] = answers[j]['answerer_name'];
+//             answerObj['helpfulness'] = answers[j]['helpful'];
+//             answerObj['photos'] = [];
+
+//             responseObj['results'][j]['answers'].push(answerObj);
+//             console.log(responseObj);
+//             console.log(JSON.stringify(responseObj))
+//           }
+//         })
+//       }
+
+
+//       res.json(results.splice(0, req.query['count']));
+//     }
+//   })
+// })
