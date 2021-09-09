@@ -6,7 +6,7 @@ USE QandAAPI;
 DROP TABLE IF EXISTS Questions;
 
 CREATE TABLE Questions (
-  id INT PRIMARY KEY,
+  id INT auto_increment PRIMARY KEY ,
   product_id INT NOT NULL,
   body VARCHAR (255),
   date_written BIGINT,
@@ -19,7 +19,7 @@ CREATE TABLE Questions (
 DROP TABLE IF EXISTS Answers;
 
 CREATE TABLE Answers (
-  id INT PRIMARY KEY,
+  id INT auto_increment PRIMARY KEY,
   question_id INT NOT NULL,
   body VARCHAR (255),
   date_written BIGINT,
@@ -34,7 +34,7 @@ CREATE TABLE Answers (
 DROP TABLE IF EXISTS Answers_Photos;
 
 CREATE TABLE Answers_Photos (
-  id INT PRIMARY KEY,
+  id INT auto_increment PRIMARY KEY,
   answer_id INT NOT NULL,
   url VARCHAR (255),
 

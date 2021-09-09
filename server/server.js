@@ -95,8 +95,22 @@ app.put('/reportAnswer', (req, res) => {
 
 // POST /submitQuestion
 app.post('/submitQuestion', (req, res) => {
-  //query
-  res.json('question Submitted')
+  const data = req.body;
+  const productId = req.body['product_id'];
+
+  const query = `INSERT INTO Questions (product_id, body, date_written, asker_name, asker_email, reported, helpful)
+  VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log('eeeroorrrrr, ', err);
+    } else {
+      console.log(results);
+      res.json('question submitted')
+    }
+  })
+
 });
 
 // POST /submitAnswer
