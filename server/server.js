@@ -118,15 +118,21 @@ app.post('/submitAnswer', (req, res) => {
   const questionId = req.body['question_id'];
   const query = `INSERT INTO Answers (question_id, body, answerer_name, answerer_email, reported, helpful, date_written)
    VALUES (${data['question_id']}, '${data['body']}', '${data['name']}', '${data['email']}', 0, 0, UNIX_TIMESTAMP())`
-
+  let answerId;
+  let photos = data.photos.slice(2, -2);
   db.query(query, (err, results) => {
     if (err) {
       console.log('eeeyyyyrror, ', err)
     } else {
-      console.log(results);
+      answerId = results['insertId']
       res.json('answer Submitted');
     }
   })
+
+  setTimeout(() => {
+    console.log(photos);
+    db.query(`INSERT INTO Answers_photos (answer_id, url) VALUES (${answerId}, '${photos}')`)
+  }, 2)
 });
 
 
