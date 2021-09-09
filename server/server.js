@@ -106,7 +106,6 @@ app.post('/submitQuestion', (req, res) => {
     if (err) {
       console.log('eeeroorrrrr, ', err);
     } else {
-      console.log(results);
       res.json('question submitted')
     }
   })
@@ -115,8 +114,19 @@ app.post('/submitQuestion', (req, res) => {
 
 // POST /submitAnswer
 app.post('/submitAnswer', (req, res) => {
-  //query
-  res.json('answer Submitted');
+  const data = req.body;
+  const questionId = req.body['question_id'];
+  const query = `INSERT INTO Answers (question_id, body, answerer_name, answerer_email, reported, helpful, date_written)
+   VALUES (${data['question_id']}, '${data['body']}', '${data['name']}', '${data['email']}', 0, 0, UNIX_TIMESTAMP())`
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log('eeeyyyyrror, ', err)
+    } else {
+      console.log(results);
+      res.json('answer Submitted');
+    }
+  })
 });
 
 
