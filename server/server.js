@@ -26,6 +26,7 @@ app.get('/qa/questions', (req, res) => {
   WHERE Questions.id = ${req.query['product_id']}
   AND Questions.id = Answers.question_id`;
   //const query = `SELECT * FROM Questions JOIN Answers ON Questions.id = Answers.id WHERE Questions.id = 1`
+  // oof
   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
     if (error) {
       console.log('err err ', error);
@@ -39,6 +40,7 @@ app.get('/qa/questions', (req, res) => {
     }
   })
 })
+
 
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
