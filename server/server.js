@@ -77,8 +77,9 @@ app.put('/reportQuestion', (req, res) => {
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
+      res.status(201).json('error in PUT /reportQuestion');
     } else {
-      res.json('question Reported');
+      res.json('question reported');
     }
   });
 });

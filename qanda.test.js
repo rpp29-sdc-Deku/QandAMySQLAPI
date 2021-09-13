@@ -39,5 +39,18 @@ describe('PUT /likeAnswer', () => {
     expect(response.status).toEqual(201);
     expect(response.body).toEqual('error in PUT /likeAnswer');
   });
+})
 
+describe('PUT /reportQuestion', () => {
+  it("responds to successful PUT /reportQuestion req with success message", async () => {
+    const response = await request.put("/reportQuestion").query({'question_id':1})
+    expect(response.status).toEqual(200);
+    expect(response.body).toEqual('question reported');
+  });
+
+  it("responds to failed PUT /reportQuestion' req with error message", async () => {
+    const response = await request.put("/reportQuestion").query({'question_id': '22312s3123123'})
+    expect(response.status).toEqual(201);
+    expect(response.body).toEqual('error in PUT /reportQuestion');
+  });
 })
