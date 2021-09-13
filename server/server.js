@@ -44,7 +44,6 @@ app.get('/qa/questions', (req, res) => {
 
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
-  console.log(req)
   const questionId = req.query['question_id'];
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
@@ -138,133 +137,13 @@ app.post('/submitAnswer', (req, res) => {
 });
 
 
-
-
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`)
+app.get('/test', async (req, res) => {
+  res.json({message: 'pass!'})
 })
 
-// {
-//   "product_id": "47600",
-//   "results": [
-//       {
-//           "question_id": 398619,
-//           "question_body": "Ut enim optio dolores aut reprehenderit illo doloremque ipsam.",
-//           "question_date": "2021-02-11T00:00:00.000Z",
-//           "asker_name": "Mariana89",
-//           "question_helpfulness": 23,
-//           "reported": false,
-//           "answers": {
-//               "3731557": {
-//                   "id": 3731557,
-//                   "body": "Deserunt distinctio quam numquam ipsam accusamus minus.",
-//                   "date": "2021-08-06T00:00:00.000Z",
-//                   "answerer_name": "Ludie.Howe",
-//                   "helpfulness": 2,
-//                   "photos": []
-//               },
-//               "3731558": {
-//                   "id": 3731558,
-//                   "body": "Hic quam quos impedit quam perspiciatis labore facilis.",
-//                   "date": "2021-08-03T00:00:00.000Z",
-//                   "answerer_name": "Evert14",
-//                   "helpfulness": 3,
-//                   "photos": []
-//               }
-//           }
-//       },
-//       {
-//           "question_id": 398615,
-//           "question_body": "Deserunt nisi placeat officia doloribus.",
-//           "question_date": "2020-10-05T00:00:00.000Z",
-//           "asker_name": "Emerson77",
-//           "question_helpfulness": 22,
-//           "reported": false,
-//           "answers": {
-//               "3731506": {
-//                   "id": 3731506,
-//                   "body": "Sed ullam qui.",
-//                   "date": "2021-02-01T00:00:00.000Z",
-//                   "answerer_name": "Doris12",
-//                   "helpfulness": 13,
-//                   "photos": [
-//                       "https://images.unsplash.com/photo-1535639818669-c059d2f038e6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80"
-//                   ]
-//               },
-//               "3731507": {
-//                   "id": 3731507,
-//                   "body": "Fuga autem officiis quam possimus ducimus mollitia quaerat numquam ad.",
-//                   "date": "2021-02-19T00:00:00.000Z",
-//                   "answerer_name": "Telly27",
-//                   "helpfulness": 4,
-//                   "photos": []
-//               },
-//               "3731508": {
-//                   "id": 3731508,
-//                   "body": "Debitis dicta quod aut incidunt.",
-//                   "date": "2020-12-17T00:00:00.000Z",
-//                   "answerer_name": "Herman_Rogahn",
-//                   "helpfulness": 18,
-//                   "photos": [
-//                       "https://images.unsplash.com/photo-1560095633-6803ba0461cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2734&q=80"
-//                   ]
-//               }
-//           }
-//       }
-//   ]
-// }
 
-// app.get('/qa/questions', (req, res) => {
-//   let responseObj = {};
-//   let answerObj = {};
-//   const query = 'SELECT * FROM QUESTIONS WHERE product_id = ?';
-//   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
-//     if (error) {
-//       console.log('err err ', error);
-//     }
-//     if (!results[0]) {
-//       res.json('No questions found')
-//     } else {
-//       for (let i = 0; i < req.query['count']; i++) {
-//         responseObj['product_id'] = req.query['product_id'];
-//         if (!responseObj['results']) {
-//           responseObj['results'] = [];
-//         }
-//         responseObj['results'].push({
-//           'question_id': results[i]['id'],
-//           'question_body': results[i]['body'],
-//           'question_date': results[i]['date_written'],
-//           'asker_name': results[i]['asker_name'],
-//           'question_helpfulness': results[i]['helpful'],
-//           'reported': results[i]['helpful'] === 0 ? true : false,
-//           'answers': []
-//         });
-//       }
-//       for (let j = 0; j < responseObj.results.length - 1; j++) {
-//         db.query(`SELECT * FROM ANSWERS WHERE question_id = ${responseObj.results[j]['question_id']}`, (error, answers) => {
-//           if (error) {
-//             console.log('errrerrrr ', error);
-//           }
-//           if (!answers) {
-//             console.log('No answers found');
-//           } else {
-//             answerObj['id'] = answers[j]['id'];
-//             answerObj['body'] = answers[j]['body'];
-//             answerObj['date'] = answers[j]['date_written'];
-//             answerObj['answerer_name'] = answers[j]['answerer_name'];
-//             answerObj['helpfulness'] = answers[j]['helpful'];
-//             answerObj['photos'] = [];
-
-//             responseObj['results'][j]['answers'].push(answerObj);
-//             console.log(responseObj);
-//             console.log(JSON.stringify(responseObj))
-//           }
-//         })
-//       }
-
-
-//       res.json(results.splice(0, req.query['count']));
-//     }
-//   })
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port: ${PORT}`)
 // })
+
+module.exports = app;
