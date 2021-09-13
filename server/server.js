@@ -44,14 +44,14 @@ app.get('/qa/questions', (req, res) => {
 
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
+  console.log(req)
   const questionId = req.query['question_id'];
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
     } else {
-
-      res.json('question Liked');
+      res.json('question liked');
     }
   });
 });

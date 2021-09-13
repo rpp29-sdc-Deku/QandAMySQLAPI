@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon server/server.js"
+    "start": "npx nodemon server/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,9 @@
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.12"
+  },
+  "devDependencies": {
+    "jest": "^27.2.0",
+    "supertest": "^6.1.6"
   }
 }
