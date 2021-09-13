@@ -91,8 +91,9 @@ app.put('/reportAnswer', (req, res) => {
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
+      res.status(201).json('error in PUT /reportAnswer');
     } else {
-      res.json('answer Reported');
+      res.json('answer reported');
     }
   });
 });
@@ -105,10 +106,11 @@ app.post('/submitQuestion', (req, res) => {
   const query = `INSERT INTO Questions (product_id, body, date_written, asker_name, asker_email, reported, helpful)
   VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)
   `;
-
+  console.log('🎉', query);
   db.query(query, (err, results) => {
     if (err) {
       console.log('eeeroorrrrr, ', err);
+      res.status(201).json('error in POST /submitQuestion');
     } else {
       res.json('question submitted')
     }

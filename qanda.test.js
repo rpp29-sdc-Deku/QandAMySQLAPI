@@ -54,3 +54,42 @@ describe('PUT /reportQuestion', () => {
     expect(response.body).toEqual('error in PUT /reportQuestion');
   });
 })
+
+describe('PUT /reportAnswer', () => {
+  it("responds to successful PUT /reportAnswer req with success message", async () => {
+    const response = await request.put("/reportAnswer").query({'answer_id':1})
+    expect(response.status).toEqual(200);
+    expect(response.body).toEqual('answer reported');
+  });
+
+  it("responds to failed PUT /reportQuestion req with error message", async () => {
+    const response = await request.put("/reportAnswer").query({'answer_id': '22312s3123123'})
+    expect(response.status).toEqual(201);
+    expect(response.body).toEqual('error in PUT /reportAnswer');
+  });
+})
+
+describe('POST /submitQuestion', () => {
+  it("responds to successful PUT /submitQuestion req with success message", async () => {
+    const response = await request.post("/submitQuestion").send({
+      'product_id': 1,
+      'body': 'test test test',
+      'name': 'The Jester',
+      'email': 'jesty@gmail.com',
+    });
+
+    expect(response.status).toEqual(200);
+    expect(response.body).toEqual('question submitted');
+  });
+
+  it("responds to failed POST /submitQuestion req with error message", async () => {
+    const response = await request.post("/submitQuestion").send({
+      'product_id': 'number1',
+      'body': 'test test test',
+      'name': 'The Jester',
+      'email': 'jesty@gmail.com',
+    });
+    expect(response.status).toEqual(201);
+    expect(response.body).toEqual('error in POST /submitQuestion');
+  });
+})
