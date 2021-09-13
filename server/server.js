@@ -49,6 +49,7 @@ app.put('/likeQuestion', (req, res) => {
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
+      res.status(201).json('error in PUT /likeQuestion');
     } else {
       res.json('question liked');
     }
