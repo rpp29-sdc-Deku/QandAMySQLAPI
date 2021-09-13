@@ -7,8 +7,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = 3030;
 
-// routes //
 
+/////////////
+// routes //
+////////////
 // root
 app.get('/', async (req, res) => {
   res.json({status: 'received get req to root '})
@@ -44,7 +46,9 @@ app.get('/qa/questions', (req, res) => {
 
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
-  const questionId = req.query['question_id'];
+  const questionId = req.body['question_id'];
+   console.log('🎄🐮🎄');
+  console.log(`question ${questionId} being liked`)
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
     if (err) {
@@ -58,7 +62,9 @@ app.put('/likeQuestion', (req, res) => {
 
 // PUT /likeAnswer
 app.put('/likeAnswer', (req, res) => {
-  const answerId = req.query['answer_id']
+  const answerId = req.body['answer_id']
+  console.log('🐮🎄🐮');
+  console.log(`answer ${answerId} being liked`)
   const query = `UPDATE Answers SET helpful = helpful+1 WHERE id = ${answerId}`;
   db.query(query, (err, results) => {
     if (err) {
@@ -106,7 +112,7 @@ app.post('/submitQuestion', (req, res) => {
   const query = `INSERT INTO Questions (product_id, body, date_written, asker_name, asker_email, reported, helpful)
   VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)
   `;
-  console.log('🎉', query);
+
   db.query(query, (err, results) => {
     if (err) {
       console.log('eeeroorrrrr, ', err);
@@ -129,9 +135,10 @@ app.post('/submitAnswer', (req, res) => {
   db.query(query, (err, results) => {
     if (err) {
       console.log('eeeyyyyrror, ', err)
+      res.status(201).json('error in POST /submitAnswer');
     } else {
-      answerId = results['insertId']
-      res.json('answer Submitted');
+      answerId = results['insertId'];
+      res.json('answer submitted');
     }
   })
 
@@ -147,8 +154,8 @@ app.get('/test', async (req, res) => {
 })
 
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port: ${PORT}`)
-// })
+app.listen(PORT, () => {
+  console.log(`Server is running on port: ${PORT}`)
+})
 
 module.exports = app;
