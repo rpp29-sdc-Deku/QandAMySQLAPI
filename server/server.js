@@ -19,16 +19,36 @@ app.get('/', async (req, res) => {
 // GET /qa/questions
 app.get('/qa/questions', (req, res) => {
   let resultObj = {};
-  const query = `SELECT
-  Questions.product_id AS product_id, Questions.id AS question_id, Questions.body AS question_body,
-  Questions.date_written AS question_date, Questions.asker_name AS asker_name, Questions.helpful AS question_helpfulness,
-  Questions.reported AS reported, Answers.id, Answers.body, Answers.date_written AS date, Answers.answerer_name,
-  Answers.helpful AS helpfulness
-  FROM Questions, Answers
-  WHERE Questions.id = ${req.query['product_id']}
-  AND Questions.id = Answers.question_id`;
-  //const query = `SELECT * FROM Questions JOIN Answers ON Questions.id = Answers.id WHERE Questions.id = 1`
-  // oof
+  // const query = `SELECT
+  // Questions.product_id AS product_id, Questions.id AS question_id, Questions.body AS question_body,
+  // Questions.date_written AS question_date, Questions.asker_name AS asker_name, Questions.helpful AS question_helpfulness,
+  // Questions.reported AS reported, Answers.id, Answers.body, Answers.date_written AS date, Answers.answerer_name,
+  // Answers.helpful AS helpfulness
+  // FROM Questions, Answers
+  // WHERE Questions.id = ${req.query['product_id']}
+  // AND Questions.id = Answers.question_id`;
+  const query =
+`SELECT
+id,
+body,
+date_written,
+asker_name,
+helpful,
+reported,
+(SELECT JSON_OBJECTAGG(
+   Answers.id, (JSON_OBJECT(
+     'id', id,
+     'body', body,
+     'date', date_written,
+     'answerer_name', answerer_name,
+     'reported', reported,
+     'helpful', helpful
+     ))
+     )
+     FROM Answers WHERE Answers.question_id = Questions.id
+     ) AS answers
+     FROM Questions
+     WHERE product_id = 1 AND reported = 0;`
   db.query(query, [req.query['product_id'], req.query['count']], (error, results) => {
     if (error) {
       console.log('err err ', error);
@@ -36,7 +56,16 @@ app.get('/qa/questions', (req, res) => {
     if (!results[0]) {
       res.json('No questions found')
     } else {
-      console.log(results);
+      console.log(results)
+      Promise.resolve(results.forEach(result => {
+        if (result['answers'] !== undefined) {
+          JSON.parse(result['answers']);
+        }
+        return results;
+      }))
+      .then(results => {
+        console.log(results)
+      })
 
       res.json(results.splice(0, req.query['count']));
     }
