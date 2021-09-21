@@ -11,6 +11,7 @@ const PORT = 3030;
 /////////////
 // routes //
 ////////////
+
 // root
 app.get('/', async (req, res) => {
   res.json({status: 'received get req to root '})
@@ -18,31 +19,24 @@ app.get('/', async (req, res) => {
 
 // GET /qa/questions
 app.get('/qa/questions', (req, res) => {
-  let resultObj = {};
-  // const query = `SELECT
-  // Questions.product_id AS product_id, Questions.id AS question_id, Questions.body AS question_body,
-  // Questions.date_written AS question_date, Questions.asker_name AS asker_name, Questions.helpful AS question_helpfulness,
-  // Questions.reported AS reported, Answers.id, Answers.body, Answers.date_written AS date, Answers.answerer_name,
-  // Answers.helpful AS helpfulness
-  // FROM Questions, Answers
-  // WHERE Questions.id = ${req.query['product_id']}
-  // AND Questions.id = Answers.question_id`;
   const query =
 `SELECT
-id,
-body,
-date_written,
+id AS question_id,
+body AS question_body,
+date_written AS question_date,
 asker_name,
-helpful,
+helpful AS question_helpfulness,
 reported,
 (SELECT JSON_OBJECTAGG(
    Answers.id, (JSON_OBJECT(
      'id', id,
      'body', body,
-     'date', date_written,
+     'date', FROM_UNIXTIME(date_written, '%Y-%m-%d %H:%i:%s'),
      'answerer_name', answerer_name,
      'reported', reported,
-     'helpful', helpful
+     'helpfulness', helpful,
+     'photos', (JSON_ARRAY('url1', 'url2', 'url3'))
+
      ))
      )
      FROM Answers WHERE Answers.question_id = Questions.id
@@ -56,17 +50,15 @@ reported,
     if (!results[0]) {
       res.json('No questions found')
     } else {
-      console.log(results)
-      Promise.resolve(results.forEach(result => {
-        if (result['answers'] !== undefined) {
-          JSON.parse(result['answers']);
-        }
-        return results;
-      }))
-      .then(results => {
-        console.log(results)
-      })
+      results.forEach(result => {
+        if (result.answers !== null) {
+          result.answers = JSON.parse(result.answers);
 
+        }
+
+      });
+      console.log('results being sent to Front END: ')
+      console.log(results)
       res.json(results.splice(0, req.query['count']));
     }
   })
@@ -76,8 +68,8 @@ reported,
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
   const questionId = req.body['question_id'];
-   console.log('🎄🐮🎄');
-  console.log(`question ${questionId} being liked`)
+   //console.log('🎄🐮🎄');
+  //console.log(`question ${questionId} being liked`)
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
     if (err) {
@@ -92,8 +84,8 @@ app.put('/likeQuestion', (req, res) => {
 // PUT /likeAnswer
 app.put('/likeAnswer', (req, res) => {
   const answerId = req.body['answer_id']
-  console.log('🐮🎄🐮');
-  console.log(`answer ${answerId} being liked`)
+  // console.log('🐮🎄🐮');
+  // console.log(`answer ${answerId} being liked`)
   const query = `UPDATE Answers SET helpful = helpful+1 WHERE id = ${answerId}`;
   db.query(query, (err, results) => {
     if (err) {
