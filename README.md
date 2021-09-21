@@ -1,3 +1,5 @@
 # QandAMySQLAPI
+API for Questions and Answers Component of retail portal for SDC - Team Deku
+Developed with MySQL, Node, Express
+To be hosted with AWS
 
-API developed with MySQL for the questions and answers component of team Feta's FEC project
