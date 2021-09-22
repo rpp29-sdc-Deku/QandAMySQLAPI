@@ -118,7 +118,6 @@ app.put('/reportAnswer', (req, res) => {
   const answerId = req.body['answer_id'];
   console.log(req.body);
   const query = `UPDATE Answers SET reported = 1 WHERE id = ${answerId}`;
-  console.log(query)
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
@@ -137,6 +136,7 @@ app.post('/submitQuestion', (req, res) => {
   const query = `INSERT INTO Questions (product_id, body, date_written, asker_name, asker_email, reported, helpful)
   VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)
   `;
+  console.log(query);
 
   db.query(query, (err, results) => {
     if (err) {
