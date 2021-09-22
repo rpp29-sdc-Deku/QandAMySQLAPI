@@ -5,6 +5,12 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 const PORT = 3030;
 
 
@@ -35,7 +41,7 @@ reported,
      'answerer_name', answerer_name,
      'reported', reported,
      'helpfulness', helpful,
-     'photos', (JSON_ARRAY('url1', 'url2', 'url3'))
+     'photos', (JSON_ARRAY('url1', 'url2'))
 
      ))
      )
@@ -57,8 +63,6 @@ reported,
         }
 
       });
-      console.log('results being sent to Front END: ')
-      console.log(results)
       res.json(results.splice(0, req.query['count']));
     }
   })
@@ -68,8 +72,8 @@ reported,
 // PUT /likeQuestion
 app.put('/likeQuestion', (req, res) => {
   const questionId = req.body['question_id'];
-   //console.log('🎄🐮🎄');
-  //console.log(`question ${questionId} being liked`)
+  // console.log('🎄🐮🎄');
+  // console.log(`question ${questionId} being liked`)
   const query = `UPDATE Questions SET helpful = helpful+1 WHERE id = ${questionId}`;
   db.query(query, (err, results) => {
     if (err) {
@@ -83,9 +87,7 @@ app.put('/likeQuestion', (req, res) => {
 
 // PUT /likeAnswer
 app.put('/likeAnswer', (req, res) => {
-  const answerId = req.body['answer_id']
-  // console.log('🐮🎄🐮');
-  // console.log(`answer ${answerId} being liked`)
+  const answerId = req.body['answer_id'];
   const query = `UPDATE Answers SET helpful = helpful+1 WHERE id = ${answerId}`;
   db.query(query, (err, results) => {
     if (err) {
@@ -99,8 +101,9 @@ app.put('/likeAnswer', (req, res) => {
 
 // PUT /reportQuestion
 app.put('/reportQuestion', (req, res) => {
-  const questionId = req.query['question_id'];
+  const questionId = req.body['question_id'];
   const query = `UPDATE Questions SET reported = 1 WHERE id = ${questionId}`;
+  console.log(query)
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
