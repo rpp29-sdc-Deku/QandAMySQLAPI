@@ -103,7 +103,6 @@ app.put('/likeAnswer', (req, res) => {
 app.put('/reportQuestion', (req, res) => {
   const questionId = req.body['question_id'];
   const query = `UPDATE Questions SET reported = 1 WHERE id = ${questionId}`;
-  console.log(query)
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
@@ -116,8 +115,10 @@ app.put('/reportQuestion', (req, res) => {
 
 // PUT /reportAnswer
 app.put('/reportAnswer', (req, res) => {
-  const answerId = req.query['answer_id'];
+  const answerId = req.body['answer_id'];
+  console.log(req.body);
   const query = `UPDATE Answers SET reported = 1 WHERE id = ${answerId}`;
+  console.log(query)
   db.query(query, (err, results) => {
     if (err) {
       console.log('errrr ', err);
