@@ -2,7 +2,6 @@ const { response } = require('express');
 const express = require('express');
 const db = require('../database/index.js');
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(function(req, res, next) {
@@ -42,7 +41,6 @@ reported,
      'reported', reported,
      'helpfulness', helpful,
      'photos', (JSON_ARRAY('url1', 'url2'))
-
      ))
      )
      FROM Answers WHERE Answers.question_id = Questions.id
@@ -134,8 +132,7 @@ app.post('/submitQuestion', (req, res) => {
   const productId = req.body['product_id'];
 
   const query = `INSERT INTO Questions (product_id, body, date_written, asker_name, asker_email, reported, helpful)
-  VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)
-  `;
+  VALUES (${data['product_id']}, '${data['body']}', UNIX_TIMESTAMP(), '${data['name']}', '${data['email']}', 0, 0)`;
   console.log(query);
 
   db.query(query, (err, results) => {
