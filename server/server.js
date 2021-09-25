@@ -1,6 +1,11 @@
 const { response } = require('express');
 const express = require('express');
 const db = require('../database/index.js');
+const os = require('os');
+const cluster = require('cluster');
+const cpus = os.cpus().length;
+const PORT = 3030;
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -10,7 +15,6 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-const PORT = 3030;
 
 
 /////////////
@@ -179,8 +183,19 @@ app.get('/test', async (req, res) => {
 })
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`)
-})
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port: ${PORT}`);
+//   console.log(`Number of cpus: ${cpus}`);
+// })
+
+if (cluster.isMaster) {
+  for (let i = 0; i < cpus; i++) {
+    cluster.fork();
+  }
+} else {
+  app.listen(PORT, () => {
+    console.log(`Server ${process.pid} is running on port: ${PORT}`);
+  })
+}
 
 module.exports = app;
