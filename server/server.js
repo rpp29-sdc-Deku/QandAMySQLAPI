@@ -183,19 +183,18 @@ app.get('/test', async (req, res) => {
 })
 
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port: ${PORT}`);
-//   console.log(`Number of cpus: ${cpus}`);
-// })
+app.listen(PORT, () => {
+  console.log(`Server is running on port: ${PORT}`);
+})
 
-if (cluster.isMaster) {
-  for (let i = 0; i < cpus; i++) {
-    cluster.fork();
-  }
-} else {
-  app.listen(PORT, () => {
-    console.log(`Server ${process.pid} is running on port: ${PORT}`);
-  })
-}
+// if (cluster.isMaster) {
+//   for (let i = 0; i < cpus; i++) {
+//     cluster.fork();
+//   }
+// } else {
+//   app.listen(PORT, () => {
+//     console.log(`Server ${process.pid} is running on port: ${PORT}`);
+//   })
+// }
 
 module.exports = app;
