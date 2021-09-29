@@ -42,6 +42,31 @@ CREATE TABLE Answers_Photos (
 );
 
 
+/* LOAD COMMANDS
+Questions:
+LOAD DATA LOCAL INFILE '/home/ec2-user/questions.csv '
+INTO TABLE Questions
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+Answers:
+LOAD DATA LOCAL INFILE '/home/ec2-user/answers.csv'
+INTO TABLE Answers
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+Answers_photos:
+LOAD DATA LOCAL INFILE '/home/ec2-user/answers_photos.csv'
+INTO TABLE Answers_Photos
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+*/
 
 
 /*  Execute this file from the command line by typing:
@@ -49,4 +74,3 @@ CREATE TABLE Answers_Photos (
  *    mysql -u root < /Users/lady/rpp29/SDCMySQL/schema.sql
  *  to create the database and the tables.*/
 
---  check out indexing MySql
